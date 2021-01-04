@@ -109,8 +109,9 @@
       };
     }
 
+    //TODO: don't hardcode path
     function getSmellIconURL(smell_value, zoom_level) {
-      var path = "/img/";
+      var path = "assets/img/";
       var smell_icon_small = ["smell_1.png", "smell_2.png", "smell_3.png", "smell_4.png", "smell_5.png"];
       var smell_icon_med = ["smell_1_med.png", "smell_2_med.png", "smell_3_med.png", "smell_4_med.png", "smell_5_med.png"];
       var smell_icon_big = ["smell_1_big.png", "smell_2_big.png", "smell_3_big.png", "smell_4_big.png", "smell_5_big.png"];
@@ -159,7 +160,7 @@
           complete_event_callback(this_obj);
         }
       });
-      image.src = '/img/wind_only_sensor.png';
+      image.src = 'assets/img/wind_only_sensor.png';
     }
 
     function createPM25Marker() {
@@ -262,7 +263,7 @@
     }
 
     function getPM25SensorIconURL(sensor_icon_idx, has_wind) {
-      var path = "/img/";
+      var path = "assets/img/";
       var sensor_icon_all = ["PM25_0.png", "PM25_1.png", "PM25_2.png", "PM25_3.png", "PM25_4.png", "PM25_5.png"];
       var sensor_icon_wind_all = ["PM25_0_wind.png", "PM25_1_wind.png", "PM25_2_wind.png", "PM25_3_wind.png", "PM25_4_wind.png", "PM25_5_wind.png"];
       var sensor_icon = has_wind ? sensor_icon_wind_all[sensor_icon_idx] : sensor_icon_all[sensor_icon_idx];
@@ -372,7 +373,7 @@
     }
 
     function getVOCSensorIconURL(sensor_icon_idx) {
-      var path = "/img/";
+      var path = "assets/img/";
       var sensor_icon_all = ["voc_0.png", "voc_1.png", "voc_2.png", "voc_3.png", "voc_4.png", "voc_5.png"];
       var sensor_icon = sensor_icon_all[sensor_icon_idx];
       return path + sensor_icon;
