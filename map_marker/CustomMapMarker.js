@@ -163,6 +163,17 @@
       image.src = 'assets/img/wind_only_sensor.png';
     }
 
+    function updateWindOnlyMarker() {
+      var wind_direction = data["wind_direction"];
+      var image = new Image();
+      // Change the google map marker's icon
+      image.addEventListener("load", function () {
+        google_map_marker.setIcon(generateWindOnlySensorIcon(image, wind_direction))
+      });
+      image.src = 'assets/img/wind_only_sensor.png';
+    }
+    this.updateWindOnlyMarker = updateWindOnlyMarker;
+
     function createPM25Marker() {
       // TODO: no_data_txt should be different for current day and previous day cases
       var no_data_txt = "No data in last hour";
@@ -213,6 +224,19 @@
       });
       image.src = getPM25SensorIconURL(sensor_icon_idx, (typeof wind_direction != "undefined"));
     }
+
+    function updatePM25Marker() {
+      var sensor_value = data["sensor_value"];
+      var sensor_icon_idx = sensorValToIconIndex(sensor_value);
+      var wind_direction = data["wind_direction"];
+      var image = new Image();
+      // Change the google map marker's icon
+      image.addEventListener("load", function () {
+        google_map_marker.setIcon(generatePM25SensorIcon(image, wind_direction))
+      });
+      image.src = getPM25SensorIconURL(sensor_icon_idx, (typeof wind_direction != "undefined"));
+    }
+    this.updatePM25Marker = updatePM25Marker;
 
     function generateWindOnlySensorIcon(image, wind_direction) {
       var icon_size = 100;
@@ -410,6 +434,13 @@
       return data;
     };
     this.getData = getData;
+
+    var setData = function (newData) {
+      if (newData) {
+        data = newData;
+      }
+    }
+    this.setData = setData;
 
     var setMap = function (google_map) {
       google_map_marker.setMap(google_map);
