@@ -228,7 +228,7 @@
     function updatePM25Marker() {
       var sensor_value = data["sensor_value"];
       var sensor_icon_idx = sensorValToIconIndex(sensor_value);
-      var wind_direction = data["wind_direction"];
+      var wind_direction = data["is_current_day"] ? data["wind_direction"] : undefined;
       var image = new Image();
       // Change the google map marker's icon
       image.addEventListener("load", function () {
