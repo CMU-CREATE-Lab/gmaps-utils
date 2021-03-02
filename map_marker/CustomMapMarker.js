@@ -244,8 +244,8 @@
 
       var rotation_degree;
       if (typeof wind_direction != "undefined") {
-        // The direction given by ACHD is the direction _from_ which the wind is coming.
-        // We reverse it to show where the wind is going to. (+180)
+        // Wind direction values are given in the direction _from_ which the wind is coming.
+        // We reverse it to show where the wind is going _to_. (+180)
         // Also, the arrow we start with is already rotated 90 degrees, so we need to account for this. (-90)
         // This means we add 90 to the wind direction value for the correct angle of the wind arrow.
         rotation_degree = wind_direction + 90;
