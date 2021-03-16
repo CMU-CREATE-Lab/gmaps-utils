@@ -130,6 +130,7 @@
     }
 
     function createWindOnlyMarker() {
+      if (!data) data = {"wind_speed" : 0, "wind_direction" : 0};
       var wind_speed = data["wind_speed"];
 
       // Create HTML content for the info window
@@ -237,6 +238,15 @@
       image.src = getPM25SensorIconURL(sensor_icon_idx, (typeof wind_direction != "undefined"));
     }
     this.updatePM25Marker = updatePM25Marker;
+
+    function updateMarker() {
+      if (typeof(data.sensor_value) == "undefined") {
+        updateWindOnlyMarker();
+      } else {
+        updatePM25Marker();
+      }
+    }
+    this.updateMarker = updateMarker;
 
     function generateWindOnlySensorIcon(image, wind_direction) {
       var icon_size = 100;
