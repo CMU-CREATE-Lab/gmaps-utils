@@ -299,7 +299,7 @@
     function getPM25SensorIconURL(sensor_icon_idx, has_wind) {
       var path = "assets/img/";
       var sensor_icon_all = ["PM25_0.png", "PM25_1.png", "PM25_2.png", "PM25_3.png", "PM25_4.png", "PM25_5.png"];
-      var sensor_icon_wind_all = ["PM25_0_wind.png", "PM25_1_wind.png", "PM25_2_wind.png", "PM25_3_wind.png", "PM25_4_wind.png", "PM25_5_wind.png"];
+      var sensor_icon_wind_all = ["PM25_0_wind3.png", "PM25_1_wind3.png", "PM25_2_wind3.png", "PM25_3_wind3.png", "PM25_4_wind3.png", "PM25_5_wind3.png"];
       var sensor_icon = has_wind ? sensor_icon_wind_all[sensor_icon_idx] : sensor_icon_all[sensor_icon_idx];
       return path + sensor_icon;
     }
