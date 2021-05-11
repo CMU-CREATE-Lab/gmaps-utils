@@ -4,7 +4,7 @@
  * Currently only support three sensor formats:
  * "wind_direction" will be blue arrows
  * "PM25" will be circles
- * "VOC" will be squares
+ * "Other" will be squares
  *************************************************************************/
 
 (function () {
@@ -20,6 +20,7 @@
     // Variables
     //
     var marker_type = settings["type"];
+    var sensor_type = settings["sensor_type"];
     var data = settings["data"];
     var init_zoom_level = settings["initZoomLevel"];
     var click_event_callback = settings["click"];
@@ -52,10 +53,10 @@
         createWindOnlyMarker();
       } else if (marker_type == "smell") {
         createSmellMarker();
-      } else if (marker_type == "PM25") {
+      } else if (marker_type == "PM25" && sensor_type != "purple_air") {
         createPM25Marker();
-      } else if (marker_type == "VOC") {
-        createVOCMarker();
+      } else if (marker_type == "PM25" && sensor_type == "purple_air") {
+        createPM25SquareMarker();
       }
     }
 
@@ -224,6 +225,7 @@
         }
       });
       image.src = getPM25SensorIconURL(sensor_icon_idx, (typeof wind_direction != "undefined"));
+
     }
 
     function updatePM25Marker() {
@@ -239,11 +241,28 @@
     }
     this.updatePM25Marker = updatePM25Marker;
 
+    function updateSquareMarker() {
+      var sensor_value = data["sensor_value"];
+      var sensor_icon_idx = sensorValToIconIndex(sensor_value);
+      var wind_direction = data["is_current_day"] ? data["wind_direction"] : undefined;
+      var image = new Image();
+      // Change the google map marker's icon
+      image.addEventListener("load", function () {
+        google_map_marker.setIcon(generateSquareSensorIcon(sensor_icon_idx, 24))
+      });
+      image.src = getSquareSensorIconURL(sensor_icon_idx);
+    }
+    this.updateSquareMarker = updateSquareMarker;
+
     function updateMarker() {
       if (typeof(data.sensor_value) == "undefined") {
         updateWindOnlyMarker();
       } else {
-        updatePM25Marker();
+        if (sensor_type == "purple_air") {
+          updateSquareMarker();
+        } else {
+          updatePM25Marker();
+        }
       }
     }
     this.updateMarker = updateMarker;
@@ -308,9 +327,9 @@
       var scale;
       if (marker_type == "PM25") {
         scale = [12, 35.4, 55.4, 150.4];
-      } else if (marker_type == "VOC") {
+      }/* else if (marker_type == "VOC") {
         scale = [400, 600, 800, 1000];
-      } else {
+      }*/ else {
         return null;
       }
 
@@ -355,7 +374,7 @@
       return canvas.toDataURL('image/png');
     }
 
-    function createVOCMarker() {
+    function createPM25SquareMarker() {
       // TODO: no_data_txt should be different for current day and previous day cases
       var no_data_txt = "No data in last hour";
       var sensor_value = data["sensor_value"];
@@ -372,33 +391,36 @@
       html_content = "";
       html_content += "<b>Name:</b> " + data["name"] + "<br>";
       if (data["is_current_day"]) {
-        html_content += "<b>Latest VOC:</b> " + sensor_txt + sensor_time_txt;
+        html_content += "<b>Latest PM<sub>2.5</sub>: " + sensor_txt + sensor_time_txt;
       } else {
-        html_content += "<b>Maximum VOC:</b> " + sensor_txt + sensor_time_txt;
+        html_content += "<b>Maximum PM<sub>2.5</sub>: " + sensor_txt + sensor_time_txt;
       }
 
       var sensor_icon_idx = sensorValToIconIndex(sensor_value);
+      var image = new Image();
 
       // Create google map marker
-      google_map_marker = new google.maps.Marker({
-        position: new google.maps.LatLng({lat: data["latitude"], lng: data["longitude"]}),
-        icon: generateVOCSensorIcon(sensor_icon_idx, 24),
-        zIndex: sensor_icon_idx + 5,
-        opacity: marker_default_opacity
+      image.addEventListener("load", function () {
+        google_map_marker = new google.maps.Marker({
+          position: new google.maps.LatLng({lat: data["latitude"], lng: data["longitude"]}),
+          icon: generateSquareSensorIcon(sensor_icon_idx, 24),
+          zIndex: sensor_icon_idx + 5,
+          opacity: marker_default_opacity
+        });
+        addMarkerEvent();
+        // Fire complete event
+        if (typeof (complete_event_callback) == "function") {
+          complete_event_callback(this_obj);
+        }
       });
-      addMarkerEvent();
-
-      // Fire complete event
-      if (typeof (complete_event_callback) == "function") {
-        complete_event_callback(this_obj);
-      }
+      image.src = getSquareSensorIconURL(sensor_icon_idx);
     }
 
-    function generateVOCSensorIcon(sensor_icon_idx, icon_size) {
+    function generateSquareSensorIcon(sensor_icon_idx, icon_size) {
       var icon_size_half = icon_size / 2;
 
       return {
-        url: getVOCSensorIconURL(sensor_icon_idx),
+        url: getSquareSensorIconURL(sensor_icon_idx),
         scaledSize: new google.maps.Size(icon_size, icon_size),
         size: new google.maps.Size(icon_size, icon_size),
         anchor: new google.maps.Point(icon_size_half, icon_size_half),
@@ -406,9 +428,9 @@
       };
     }
 
-    function getVOCSensorIconURL(sensor_icon_idx) {
+    function getSquareSensorIconURL(sensor_icon_idx) {
       var path = "assets/img/";
-      var sensor_icon_all = ["voc_0.png", "voc_1.png", "voc_2.png", "voc_3.png", "voc_4.png", "voc_5.png"];
+      var sensor_icon_all = ["square_0.png", "square_1.png", "square_2.png", "square_3.png", "square_4.png", "square_5.png"];
       var sensor_icon = sensor_icon_all[sensor_icon_idx];
       return path + sensor_icon;
     }
