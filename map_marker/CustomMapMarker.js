@@ -255,7 +255,7 @@
     this.updateSquareMarker = updateSquareMarker;
 
     function updateMarker() {
-      if (typeof(data.sensor_value) == "undefined") {
+      if (marker_type == "WIND_ONLY") {
         updateWindOnlyMarker();
       } else {
         if (sensor_type == "purple_air") {
