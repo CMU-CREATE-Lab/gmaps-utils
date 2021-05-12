@@ -21,6 +21,7 @@
     //
     var marker_type = settings["type"];
     var sensor_type = settings["sensor_type"];
+    var marker_icon_size = settings["marker_icon_size"] || 24;
     var data = settings["data"];
     var init_zoom_level = settings["initZoomLevel"];
     var click_event_callback = settings["click"];
@@ -248,7 +249,7 @@
       var image = new Image();
       // Change the google map marker's icon
       image.addEventListener("load", function () {
-        google_map_marker.setIcon(generateSquareSensorIcon(sensor_icon_idx, 24))
+        google_map_marker.setIcon(generateSquareSensorIcon(sensor_icon_idx, marker_icon_size))
       });
       image.src = getSquareSensorIconURL(sensor_icon_idx);
     }
@@ -403,7 +404,7 @@
       image.addEventListener("load", function () {
         google_map_marker = new google.maps.Marker({
           position: new google.maps.LatLng({lat: data["latitude"], lng: data["longitude"]}),
-          icon: generateSquareSensorIcon(sensor_icon_idx, 24),
+          icon: generateSquareSensorIcon(sensor_icon_idx, marker_icon_size),
           zIndex: sensor_icon_idx + 5,
           opacity: marker_default_opacity
         });
