@@ -22,6 +22,7 @@
     var marker_type = settings["type"];
     var sensor_type = settings["sensor_type"];
     var marker_icon_size = settings["marker_icon_size"] || 24;
+    var marker_draw_level_padding = settings["marker_draw_level_padding"] || 5;
     var data = settings["data"];
     var init_zoom_level = settings["initZoomLevel"];
     var click_event_callback = settings["click"];
@@ -215,7 +216,7 @@
         google_map_marker = new google.maps.Marker({
           position: new google.maps.LatLng({lat: data["latitude"], lng: data["longitude"]}),
           icon: generatePM25SensorIcon(image, wind_direction),
-          zIndex: sensor_icon_idx + 5,
+          zIndex: sensor_icon_idx + marker_draw_level_padding,
           opacity: marker_default_opacity,
           shape: {coords: [50, 50, 12.5], type: "circle"} // Modify click region
         });
@@ -405,7 +406,7 @@
         google_map_marker = new google.maps.Marker({
           position: new google.maps.LatLng({lat: data["latitude"], lng: data["longitude"]}),
           icon: generateSquareSensorIcon(sensor_icon_idx, marker_icon_size),
-          zIndex: sensor_icon_idx + 5,
+          zIndex: sensor_icon_idx + marker_draw_level_padding,
           opacity: marker_default_opacity
         });
         addMarkerEvent();
