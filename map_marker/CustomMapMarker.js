@@ -501,6 +501,11 @@
     };
     this.getMarkerType = getMarkerType;
 
+    var getSensorType = function() {
+      return sensor_type;
+    }
+    this.getSensorType = getSensorType;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // Constructor
