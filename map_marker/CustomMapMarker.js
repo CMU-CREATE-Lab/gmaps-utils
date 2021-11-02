@@ -214,6 +214,7 @@
       // Create google map marker
       image.addEventListener("load", function () {
         google_map_marker = new google.maps.Marker({
+          title: data['name'],
           position: new google.maps.LatLng({lat: data["latitude"], lng: data["longitude"]}),
           icon: generatePM25SensorIcon(image, wind_direction),
           zIndex: sensor_icon_idx + marker_draw_level_padding,
