@@ -152,6 +152,7 @@
       // Create google map marker
       image.addEventListener("load", function () {
         google_map_marker = new google.maps.Marker({
+          title: data['name'],
           position: new google.maps.LatLng({lat: data["latitude"], lng: data["longitude"]}),
           icon: generateWindOnlySensorIcon(image, wind_direction),
           zIndex: 200,
@@ -164,7 +165,7 @@
           complete_event_callback(this_obj);
         }
       });
-      image.src = 'assets/img/wind_only_sensor.png';
+      image.src = 'assets/img/wind_only_sensor2.png';
     }
 
     function updateWindOnlyMarker() {
@@ -174,7 +175,7 @@
       image.addEventListener("load", function () {
         google_map_marker.setIcon(generateWindOnlySensorIcon(image, wind_direction))
       });
-      image.src = 'assets/img/wind_only_sensor.png';
+      image.src = 'assets/img/wind_only_sensor2.png';
     }
     this.updateWindOnlyMarker = updateWindOnlyMarker;
 
