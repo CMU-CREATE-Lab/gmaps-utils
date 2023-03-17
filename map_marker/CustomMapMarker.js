@@ -167,6 +167,22 @@
       image.src = 'assets/img/wind_only_sensor2.png';
     }
 
+    function updateDisabledMarker() {
+      var image = new Image();
+      // Change the google map marker's icon
+      image.addEventListener("load", function () {
+        google_map_marker.setIcon(generateDisabledSensorIcon(image))
+      });
+      if (marker_icon == "square") {
+        image.src = 'assets/img/square_disabled.png';
+      } else if (marker_icon == "diamond") {
+        image.src = 'assets/img/diamond_disabled.png';
+      } else {
+        image.src = 'assets/img/PM25_disabled.png';
+      }
+    }
+    this.updateDisabledMarker = updateDisabledMarker;
+
     function updateWindOnlyMarker() {
       var wind_direction = data["wind_direction"];
       var image = new Image();
@@ -247,14 +263,30 @@
     }
     this.updatePM25Marker = updatePM25Marker;
 
-    function updateMarker() {
-      if (marker_type == "WIND_ONLY") {
+    function updateMarker(forceType) {
+      if (forceType == "disabled") {
+        updateDisabledMarker();
+      } else if (marker_type == "WIND_ONLY") {
         updateWindOnlyMarker();
       } else {
         updatePM25Marker();
       }
     }
     this.updateMarker = updateMarker;
+
+    function generateDisabledSensorIcon(image) {
+      var icon_size = marker_icon_size;
+      var icon_size_half = marker_icon_size / 2;
+      var icon_url = image.src;
+
+      return {
+        url: icon_url,
+        scaledSize: new google.maps.Size(icon_size, icon_size),
+        size: new google.maps.Size(icon_size, icon_size),
+        anchor: new google.maps.Point(icon_size_half, icon_size_half),
+        origin: new google.maps.Point(0, 0)
+      };
+    }
 
     function generateWindOnlySensorIcon(image, wind_direction) {
       var icon_size = 100;
