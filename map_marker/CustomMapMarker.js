@@ -10,6 +10,9 @@
 (function () {
   "use strict";
 
+  // Note: Trailing slash required!
+  var IMG_ASSETS_ROOT_PATH = "assets/img/";
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //
   // Create the class
@@ -113,7 +116,7 @@
 
     //TODO: don't hardcode path
     function getSmellIconURL(smell_value, zoom_level) {
-      var path = "assets/img/";
+      var path = IMG_ASSETS_ROOT_PATH;
       var smell_icon_small = ["smell_1.png", "smell_2.png", "smell_3.png", "smell_4.png", "smell_5.png"];
       var smell_icon_med = ["smell_1_med.png", "smell_2_med.png", "smell_3_med.png", "smell_4_med.png", "smell_5_med.png"];
       var smell_icon_big = ["smell_1_big.png", "smell_2_big.png", "smell_3_big.png", "smell_4_big.png", "smell_5_big.png"];
@@ -164,7 +167,7 @@
           complete_event_callback(this_obj);
         }
       });
-      image.src = 'assets/img/wind_only_sensor2.png';
+      image.src = IMG_ASSETS_ROOT_PATH + 'wind_only_sensor2.png';
     }
 
     function updateDisabledMarker() {
@@ -174,11 +177,11 @@
         google_map_marker.setIcon(generateDisabledSensorIcon(image))
       });
       if (marker_icon == "square") {
-        image.src = 'assets/img/square_disabled.png';
+        image.src = IMG_ASSETS_ROOT_PATH + 'square_disabled.png';
       } else if (marker_icon == "diamond") {
-        image.src = 'assets/img/diamond_disabled.png';
+        image.src = IMG_ASSETS_ROOT_PATH + 'diamond_disabled.png';
       } else {
-        image.src = 'assets/img/PM25_disabled.png';
+        image.src = IMG_ASSETS_ROOT_PATH + 'PM25_disabled.png';
       }
     }
     this.updateDisabledMarker = updateDisabledMarker;
@@ -190,7 +193,7 @@
       image.addEventListener("load", function () {
         google_map_marker.setIcon(generateWindOnlySensorIcon(image, wind_direction))
       });
-      image.src = 'assets/img/wind_only_sensor2.png';
+      image.src = IMG_ASSETS_ROOT_PATH + 'wind_only_sensor2.png';
     }
     this.updateWindOnlyMarker = updateWindOnlyMarker;
 
@@ -335,7 +338,7 @@
     }
 
     function getPM25SensorIconURL(sensor_icon_idx, has_wind) {
-      var path = "assets/img/";
+      var path = IMG_ASSETS_ROOT_PATH;
       var sensor_icons = {
         "circle" : [
           ["PM25_0.png", "PM25_1.png", "PM25_2.png", "PM25_3.png", "PM25_4.png", "PM25_5.png"],
