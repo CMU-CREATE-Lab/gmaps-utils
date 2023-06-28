@@ -10,8 +10,8 @@
 (function () {
   "use strict";
 
-  // Note: Trailing slash required!
-  var IMG_ASSETS_ROOT_PATH = "assets/img/";
+  // If relevant, ASSETS_ROOT is defined externally. Otherwise, use relative path.
+  var IMG_ASSETS_ROOT_PATH = typeof(ASSETS_ROOT) != 'undefined' ? ASSETS_ROOT + "img/" : "assets/img/";
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //
