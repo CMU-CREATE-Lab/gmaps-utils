@@ -167,7 +167,11 @@
           complete_event_callback(this_obj);
         }
       });
-      image.src = IMG_ASSETS_ROOT_PATH + 'wind_only_sensor2.png';
+      var icon_path = "wind_only_sensor2.png";
+      if (wind_direction == undefined) {
+        icon_path = "wind_only_no_data.png"
+      }
+      image.src = IMG_ASSETS_ROOT_PATH + icon_path;
     }
 
     function updateDisabledMarker() {
@@ -193,7 +197,11 @@
       image.addEventListener("load", function () {
         google_map_marker.setIcon(generateWindOnlySensorIcon(image, wind_direction))
       });
-      image.src = IMG_ASSETS_ROOT_PATH + 'wind_only_sensor2.png';
+      var icon_path = 'wind_only_sensor2.png'
+      if (wind_direction == undefined) {
+        icon_path = "wind_only_no_data.png"
+      }
+      image.src = IMG_ASSETS_ROOT_PATH + icon_path;
     }
     this.updateWindOnlyMarker = updateWindOnlyMarker;
 
