@@ -55,7 +55,9 @@
     // Private methods
     //
     function init() {
-      if (marker_type == "WIND_ONLY") {
+      if (marker_type == "WIND_ONLY2") {
+        createWindOnly2Marker();
+      } else if (marker_type == "WIND_ONLY") {
         createWindOnlyMarker();
       } else if (marker_type == "smell") {
         createSmellMarker();
@@ -174,6 +176,45 @@
       image.src = IMG_ASSETS_ROOT_PATH + icon_path;
     }
 
+    function createWindOnly2Marker() {
+      if (!data) data = {"wind_speed" : 0, "wind_direction" : 0};
+      var wind_speed = data["wind_speed"];
+
+      // Create HTML content for the info window
+      html_content = "";
+      html_content += "<b>Name:</b> " + data["name"] + "<br>";
+      if (data["is_current_day"]) {
+        if (typeof wind_speed !== "undefined") {
+          var wind_txt = (isNaN(wind_speed) || wind_speed < 0) ? no_data_txt : wind_speed + " MPH";
+          var wind_time = new Date(data["wind_data_time"]);
+          var wind_time_txt = " at time " + padTimeString(wind_time.getHours() + 1) + ":" + padTimeString(wind_time.getMinutes() + 1);
+          html_content += '<b>Latest Wind Speed:</b> ' + wind_txt + wind_time_txt;
+        }
+      }
+      var wind_direction = data["wind_direction"];
+      var image = new Image();
+      // Create google map marker
+      image.addEventListener("load", function () {
+        google_map_marker = new google.maps.Marker({
+          position: new google.maps.LatLng({lat: data["latitude"], lng: data["longitude"]}),
+          icon: generateWindOnlySensorIcon(image, wind_direction),
+          zIndex: 200,
+          opacity: marker_default_opacity,
+          clickable: false
+        });
+        addMarkerEvent();
+        // Fire complete event
+        if (typeof (complete_event_callback) == "function") {
+          complete_event_callback(this_obj);
+        }
+      });
+      var icon_path = "wind_only_sensor2_no_dot.png";
+      if (wind_direction == undefined) {
+        icon_path = "wind_only_no_data_no_dot.png";
+      }
+      image.src = IMG_ASSETS_ROOT_PATH + icon_path;
+    }
+
     function updateDisabledMarker() {
       var image = new Image();
       // Change the google map marker's icon
@@ -200,6 +241,21 @@
       var icon_path = 'wind_only_sensor2.png'
       if (wind_direction == undefined) {
         icon_path = "wind_only_no_data.png"
+      }
+      image.src = IMG_ASSETS_ROOT_PATH + icon_path;
+    }
+    this.updateWindOnlyMarker = updateWindOnlyMarker;
+
+    function updateWindOnly2Marker() {
+      var wind_direction = data["wind_direction"];
+      var image = new Image();
+      // Change the google map marker's icon
+      image.addEventListener("load", function () {
+        google_map_marker.setIcon(generateWindOnlySensorIcon(image, wind_direction))
+      });
+      var icon_path = 'wind_only_sensor2_no_dot.png';
+      if (wind_direction == undefined) {
+        icon_path = "wind_only_no_data_no_dot.png";
       }
       image.src = IMG_ASSETS_ROOT_PATH + icon_path;
     }
@@ -279,6 +335,8 @@
         updateDisabledMarker();
       } else if (marker_type == "WIND_ONLY") {
         updateWindOnlyMarker();
+      } else if (marker_type == "WIND_ONLY2") {
+        updateWindOnly2Marker();
       } else {
         updatePM25Marker();
       }
