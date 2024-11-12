@@ -22,6 +22,7 @@
     //
     // Variables
     //
+    var aq_std = settings["aq_std"];
     var marker_type = settings["type"];         // pm25, wind_only, smell, etc
     var sensor_type = settings["sensor_type"];  // purple_air, air_now, etc
     var marker_icon = settings["marker_icon"];  // circle, square, etc
@@ -63,6 +64,10 @@
         createSmellMarker();
       } else if (marker_type == "PM25") {
         createPM25Marker();
+      } else if (marker_type == "PM10") {
+        createPM25Marker();
+      } else {
+        createPM25Marker();
       }
     }
 
@@ -83,11 +88,11 @@
 
       // Create HTML content for the info window
       current_icon_size = zoom_level_to_icon_size[init_zoom_level];
-      html_content = "";
-      html_content += "<b>Date:</b> " + (new Date(data["observed_at"] * 1000)).toLocaleString() + "<br>";
-      html_content += "<b>Smell Rating:</b> " + smell_value + " (" + smell_value_to_text[smell_value - 1] + ")<br>";
-      html_content += "<b>Symptoms:</b> " + feelings_symptoms + "<br>";
-      html_content += "<b>Smell Description:</b> " + smell_description;
+      // html_content = "";
+      // html_content += "<b>Date:</b> " + (new Date(data["observed_at"] * 1000)).toLocaleString() + "<br>";
+      // html_content += "<b>Smell Rating:</b> " + smell_value + " (" + smell_value_to_text[smell_value - 1] + ")<br>";
+      // html_content += "<b>Symptoms:</b> " + feelings_symptoms + "<br>";
+      // html_content += "<b>Smell Description:</b> " + smell_description;
 
       // Create google map marker
       google_map_marker = new google.maps.Marker({
@@ -141,16 +146,16 @@
       var wind_speed = data["wind_speed"];
 
       // Create HTML content for the info window
-      html_content = "";
-      html_content += "<b>Name:</b> " + data["name"] + "<br>";
-      if (data["is_current_day"]) {
-        if (typeof wind_speed !== "undefined") {
-          var wind_txt = (isNaN(wind_speed) || wind_speed < 0) ? no_data_txt : wind_speed + " MPH";
-          var wind_time = new Date(data["wind_data_time"]);
-          var wind_time_txt = " at time " + padTimeString(wind_time.getHours() + 1) + ":" + padTimeString(wind_time.getMinutes() + 1);
-          html_content += '<b>Latest Wind Speed:</b> ' + wind_txt + wind_time_txt;
-        }
-      }
+      // html_content = "";
+      // html_content += "<b>Name:</b> " + data["name"] + "<br>";
+      // if (data["is_current_day"]) {
+      //   if (typeof wind_speed !== "undefined") {
+      //     var wind_txt = (isNaN(wind_speed) || wind_speed < 0) ? no_data_txt : wind_speed + " MPH";
+      //     var wind_time = new Date(data["wind_data_time"]);
+      //     var wind_time_txt = " at time " + padTimeString(wind_time.getHours() + 1) + ":" + padTimeString(wind_time.getMinutes() + 1);
+      //     html_content += '<b>Latest Wind Speed:</b> ' + wind_txt + wind_time_txt;
+      //   }
+      // }
       var wind_direction = data["wind_direction"];
       var image = new Image();
       // Create google map marker
@@ -181,16 +186,16 @@
       var wind_speed = data["wind_speed"];
 
       // Create HTML content for the info window
-      html_content = "";
-      html_content += "<b>Name:</b> " + data["name"] + "<br>";
-      if (data["is_current_day"]) {
-        if (typeof wind_speed !== "undefined") {
-          var wind_txt = (isNaN(wind_speed) || wind_speed < 0) ? no_data_txt : wind_speed + " MPH";
-          var wind_time = new Date(data["wind_data_time"]);
-          var wind_time_txt = " at time " + padTimeString(wind_time.getHours() + 1) + ":" + padTimeString(wind_time.getMinutes() + 1);
-          html_content += '<b>Latest Wind Speed:</b> ' + wind_txt + wind_time_txt;
-        }
-      }
+      // html_content = "";
+      // html_content += "<b>Name:</b> " + data["name"] + "<br>";
+      // if (data["is_current_day"]) {
+      //   if (typeof wind_speed !== "undefined") {
+      //     var wind_txt = (isNaN(wind_speed) || wind_speed < 0) ? no_data_txt : wind_speed + " MPH";
+      //     var wind_time = new Date(data["wind_data_time"]);
+      //     var wind_time_txt = " at time " + padTimeString(wind_time.getHours() + 1) + ":" + padTimeString(wind_time.getMinutes() + 1);
+      //     html_content += '<b>Latest Wind Speed:</b> ' + wind_txt + wind_time_txt;
+      //   }
+      // }
       var wind_direction = data["wind_direction"];
       var image = new Image();
       // Create google map marker
@@ -230,6 +235,26 @@
       }
     }
     this.updateDisabledMarker = updateDisabledMarker;
+
+    function updateNoChannelMarker() {
+      var image = new Image();
+      // Change the google map marker's icon
+      image.addEventListener("load", function () {
+        google_map_marker.setIcon(generateDisabledSensorIcon(image))
+      });
+      if (marker_icon == "square") {
+        image.src = IMG_ASSETS_ROOT_PATH + 'square_no.png';
+      } else if (marker_icon == "diamond") {
+        image.src = IMG_ASSETS_ROOT_PATH + 'diamond_disabled.png';
+      } else {
+        if (data["wind_direction"]) {
+          image.src = IMG_ASSETS_ROOT_PATH + 'PM25_no_wind3.png';
+        } else {
+          image.src = IMG_ASSETS_ROOT_PATH + 'PM25_no.png';
+        }
+      }
+    }
+    this.updateNoChannelMarker = updateNoChannelMarker;
 
     function updateWindOnlyMarker() {
       var wind_direction = data["wind_direction"];
@@ -276,19 +301,19 @@
       }
 
       // Create HTML content for the info window
-      html_content = "";
-      html_content += "<b>Name:</b> " + data["name"] + "<br>";
-      if (data["is_current_day"]) {
-        html_content += "<b>Latest PM<sub>2.5</sub>:</b> " + sensor_txt + sensor_time_txt + "<br>";
-        if (typeof wind_speed !== "undefined") {
-          var wind_txt = (isNaN(wind_speed) || wind_speed < 0) ? no_data_txt : wind_speed + " MPH";
-          var wind_time = new Date(data["wind_data_time"]);
-          var wind_time_txt = " at time " + padTimeString(wind_time.getHours() + 1) + ":" + padTimeString(wind_time.getMinutes() + 1);
-          html_content += '<b>Latest Wind Speed:</b> ' + wind_txt + wind_time_txt;
-        }
-      } else {
-        html_content += "<b>Maximum PM<sub>2.5</sub>:</b> " + sensor_txt + sensor_time_txt;
-      }
+      // html_content = "";
+      // html_content += "<b>Name:</b> " + data["name"] + "<br>";
+      // if (data["is_current_day"]) {
+      //   html_content += "<b>Latest PM<sub>2.5</sub>:</b> " + sensor_txt + sensor_time_txt + "<br>";
+      //   if (typeof wind_speed !== "undefined") {
+      //     var wind_txt = (isNaN(wind_speed) || wind_speed < 0) ? no_data_txt : wind_speed + " MPH";
+      //     var wind_time = new Date(data["wind_data_time"]);
+      //     var wind_time_txt = " at time " + padTimeString(wind_time.getHours() + 1) + ":" + padTimeString(wind_time.getMinutes() + 1);
+      //     html_content += '<b>Latest Wind Speed:</b> ' + wind_txt + wind_time_txt;
+      //   }
+      // } else {
+      //   html_content += "<b>Maximum PM<sub>2.5</sub>:</b> " + sensor_txt + sensor_time_txt;
+      // }
 
       var sensor_icon_idx = sensorValToIconIndex(sensor_value);
       var wind_direction = data["wind_direction"];
@@ -330,9 +355,17 @@
     }
     this.updatePM25Marker = updatePM25Marker;
 
-    function updateMarker(forceType) {
+    function updateMarker(forceType, new_aq_std, new_marker_type) {
+      if (new_marker_type) {
+        marker_type = new_marker_type;
+      }
+      if (aq_std) {
+        aq_std = new_aq_std;
+      }
       if (forceType == "disabled") {
         updateDisabledMarker();
+      } else if (forceType == "noData") {
+        updateNoChannelMarker();
       } else if (marker_type == "WIND_ONLY") {
         updateWindOnlyMarker();
       } else if (marker_type == "WIND_ONLY2") {
@@ -348,6 +381,10 @@
       var icon_size_half = marker_icon_size / 2;
       var icon_url = image.src;
 
+      if (typeof data["wind_direction"] != "undefined") {
+        icon_url = getMarkerRotationFromWind(image, data["wind_direction"]);
+      }
+
       return {
         url: icon_url,
         scaledSize: new google.maps.Size(icon_size, icon_size),
@@ -361,23 +398,22 @@
       var icon_size = 100;
       var icon_size_half = 50;
 
-      var rotation_degree;
-      if (typeof wind_direction != "undefined") {
-        // Wind direction values are given in the direction _from_ which the wind is coming.
-        // We reverse it to show where the wind is going _to_. (+180)
-        // Also, the arrow we start with is already rotated 90 degrees, so we need to account for this. (-90)
-        // This means we add 90 to the wind direction value for the correct angle of the wind arrow.
-        rotation_degree = wind_direction + 90;
-      } else {
-        rotation_degree = 0;
-      }
       return {
-        url: getRotatedMarker(image, rotation_degree),
+        url: getMarkerRotationFromWind(image, wind_direction),
         scaledSize: new google.maps.Size(icon_size, icon_size),
         size: new google.maps.Size(icon_size, icon_size),
         anchor: new google.maps.Point(icon_size_half, icon_size_half),
         origin: new google.maps.Point(0, 0)
       };
+    }
+
+    function getMarkerRotationFromWind(image, wind_direction) {
+        // Wind direction values are given in the direction _from_ which the wind is coming.
+        // We reverse it to show where the wind is going to. (+180)
+        // Also, the arrow we start with is already rotated 90 degrees, so we need to account for this. (-90)
+        // This means we add 90 to the wind direction value for the correct angle of the wind arrow.
+        var rotation_degree = typeof wind_direction == "undefined" ? 0 : wind_direction + 90;
+        return getRotatedMarker(image, rotation_degree);
     }
 
     function generatePM25SensorIcon(image, wind_direction) {
@@ -386,12 +422,7 @@
       var icon_url = image.src;
 
       if (typeof wind_direction != "undefined") {
-        // The direction given by ACHD is the direction _from_ which the wind is coming.
-        // We reverse it to show where the wind is going to. (+180)
-        // Also, the arrow we start with is already rotated 90 degrees, so we need to account for this. (-90)
-        // This means we add 90 to the wind direction value for the correct angle of the wind arrow.
-        var rotation_degree = wind_direction + 90;
-        icon_url = getRotatedMarker(image, rotation_degree);
+        icon_url = getMarkerRotationFromWind(image, wind_direction);
       }
 
       return {
@@ -426,24 +457,22 @@
     }
 
     function sensorValToIconIndex(sensor_value) {
-      var scale;
-      if (marker_type == "PM25") {
-        scale = [12, 35.4, 55.4, 150.4];
-      }/* else if (marker_type == "VOC") {
-        scale = [400, 600, 800, 1000];
-      }*/ else {
-        return null;
+      // TODO availableAqStds is a global
+      var scale = availableAqStds[aq_std]?.['scales'][marker_type];
+
+      if (!scale) {
+        return 0;
       }
 
       if (isNaN(sensor_value) || sensor_value < 0) {
         return 0;
-      } else if (sensor_value >= 0 && sensor_value <= scale[0]) {
+      } else if (sensor_value >= 0 && sensor_value <= scale[1]) {
         return 1;
-      } else if (sensor_value > scale[0] && sensor_value <= scale[1]) {
+      } else if (sensor_value > scale[0] && sensor_value <= scale[2]) {
         return 2;
-      } else if (sensor_value > scale[1] && sensor_value <= scale[2]) {
+      } else if (sensor_value > scale[1] && sensor_value <= scale[3]) {
         return 3;
-      } else if (sensor_value > scale[2] && sensor_value <= scale[3]) {
+      } else if (sensor_value > scale[2] && sensor_value <= scale[4]) {
         return 4;
       } else {
         return 5;
@@ -546,6 +575,16 @@
       return sensor_type;
     }
     this.getSensorType = getSensorType;
+
+    var setMarkerAQStd = function(new_aq_std) {
+      aq_std = new_aq_std;
+    }
+    this.setMarkerAQStd = setMarkerAQStd;
+
+    var getMarkerAQStd = function() {
+      return aq_std;
+    }
+    this.getMarkerAQStd = getMarkerAQStd;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
